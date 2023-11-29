@@ -1,5 +1,5 @@
 import os
-
+import requests
 import tensorflow as tf
 from flask import Flask, render_template, request, send_from_directory
 
@@ -10,8 +10,12 @@ UPLOAD_FOLDER = "uploads"
 STATIC_FOLDER = "static"
 
 # Load model
-cnn_model = tf.keras.models.load_model(STATIC_FOLDER + "/models/" + "dog_cat_M.h5")
-
+model_url = "https://cat-dog-model.s3.eu-north-1.amazonaws.com/dog_cat_M.h5"
+model_path = "static/models/dog_cat_M.h5"
+response = requests.get(model_url)
+with open(model_path, 'wb') as file:
+    file.write(response.content)
+cnn_model = tf.keras.models.load_model(model_path)
 IMAGE_SIZE = 192
 
 # Preprocess an image
